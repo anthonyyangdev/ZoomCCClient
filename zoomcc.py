@@ -1,6 +1,5 @@
 import speech_recognition as sr
 import requests
-import sys
 
 
 def post_session(url: str) -> str:
@@ -19,7 +18,7 @@ def get_url_plus(id: str) -> str:
     return json_data['url']
 
 
-def start(zoom_api_token: str):
+def start(name: str, zoom_api_token: str):
     r = sr.Recognizer()
     mic = sr.Microphone()
     session_id = post_session(zoom_api_token)
@@ -29,7 +28,7 @@ def start(zoom_api_token: str):
             with mic as source:
                 r.adjust_for_ambient_noise(source)
                 audio = r.listen(source)
-            message = "Anthony: " + r.recognize_google(audio) + "\n"
+            message = f"{name}: " + r.recognize_google(audio) + "\n"
             print(message)
             headers = {'content-type': 'text/plain', 'content-length': str(len(message)), 'accept': '*/*'}
             x = requests.post(url, data=message, headers=headers)
@@ -39,9 +38,14 @@ def start(zoom_api_token: str):
 
 
 if __name__ == "__main__":
+    print("Input your display name:")
+    name_input = input(">>").strip()
+    if name_input == 'cancel':
+        exit(0)
+    print("")
     print("Paste the Zoom API token")
     print("(This is obtained by clicking on 'Closed Captions' at the bottom, and selecting 'Copy the API token')")
-    zoom_api_token = input(">>").strip()
-    if zoom_api_token == 'cancel':
+    usr_input = input(">>").strip()
+    if usr_input == 'cancel':
         exit(0)
-    start(zoom_api_token)
+    start(name_input, usr_input)
