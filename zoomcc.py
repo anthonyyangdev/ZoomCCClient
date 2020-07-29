@@ -4,14 +4,18 @@ import sys
 
 
 def post_session(url: str) -> str:
-    response = requests.post('http://localhost:8080/session/create', data={'token': url})
+    print("Making post request")
+    response = requests.post('https://zoomcc.herokuapp.com/session/create', data={'token': url})
     json_data = response.json()
+    print("Received id")
     return json_data['id']
 
 
 def get_url_plus(id: str) -> str:
-    response = requests.get(f'http://localhost:8080/session/{id}')
+    print("Making get request")
+    response = requests.get(f'https://zoomcc.herokuapp.com/session/{id}')
     json_data = response.json()
+    print("Received url")
     return json_data['url']
 
 
@@ -35,7 +39,9 @@ def start(zoom_api_token: str):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please have the Zoom API token as an argument.")
-    else:
-        start(sys.argv[1])
+    print("Paste the Zoom API token")
+    print("(This is obtained by clicking on 'Closed Captions' at the bottom, and selecting 'Copy the API token')")
+    zoom_api_token = input(">>").strip()
+    if zoom_api_token == 'cancel':
+        exit(0)
+    start(zoom_api_token)
